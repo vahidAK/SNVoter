@@ -28,7 +28,7 @@ os.environ['PYTHONHASHSEED'] = '0'
 import numpy as np
 import random as rn
 import tensorflow as tf
-
+import warnings
 rn.seed(1)
 np.random.seed(1)
 tf.random.set_seed(1)
@@ -46,6 +46,9 @@ from itertools import repeat
 from pickle import dump, load
 import statistics
 import pandas as pd
+import gzip
+import bz2
+from collections import defaultdict
 try:
     from sklearn.preprocessing import StandardScaler
     from sklearn.metrics import roc_curve
@@ -81,7 +84,6 @@ def precision(y_true, y_pred):
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision_m = true_positives / (predicted_positives + K.epsilon())
     return precision_m
-
 def F1(y_true, y_pred):
     """
     Function to calculate model F1 during training
@@ -148,6 +150,18 @@ def model_plot(fpr_keras, tpr_keras,output,history):
     plt.close('all')
 
 
+def openfile(file):
+    '''
+    Opens a file
+    '''
+    if file.endswith('.gz'):
+        opened_file = gzip.open(file,'rt')
+    elif file.endswith('bz') or file.endswith('bz2'):
+        opened_file = bz2.open(file,'rt')
+    else:
+        opened_file = open(file,'rt')
+    return opened_file
+
 def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
     """
     Function to calculate mutation frequenies and qualities (features). The features
@@ -165,26 +179,20 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
         except:
             raise Exception("Cannot load reference file.")
         try:
-            try:
-                window_seq= fasta.fetch(reference=chrom,
-                                        start=windowstart,
-                                        end=windowend)
-            except:
-                window_seq= fasta.fetch(reference=chrom[3:],
-                                        start=windowstart,
-                                        end=windowend)
+            window_seq= fasta.fetch(reference=chrom,
+                                    start=windowstart,
+                                    end=windowend)
         except: # Window is not in the reference
+            warnings.warn("Reference sequence for {}:{}-{} "
+                          "was not found in the reference file"
+                          "".format(chrom,windowstart,windowend))
             continue
                 
         window_seq=str(window_seq.upper())
-        try:
-            pileupcolumns= bam.pileup(chrom, windowstart, windowend,
-                                      truncate= True,min_base_quality = 0,
-                                      min_mapping_quality = mq)
-        except:
-            pileupcolumns= bam.pileup(chrom[3:], windowstart, windowend,
-                                      truncate= True,min_base_quality = 0,
-                                      min_mapping_quality = mq)
+        pileupcolumns= bam.pileup(chrom, windowstart, windowend,
+                                  truncate= True,min_base_quality = 0,
+                                  min_mapping_quality = mq)
+            
         refbase_index= 0
         del_list= []
         mis_list= []
@@ -290,14 +298,10 @@ def main_extraction(args):
     mod_status= args.mod_status
     window_list=list()
     feed_list= list()
-    bed_file= os.path.abspath(args.input)
-    if not bed_file.endswith('.bed') and not bed_file.endswith('.vcf'):
-        raise TypeError("Input file is not a vcf or bed file.")
-    bed= open(bed_file)
-    if bed_file.endswith('.bed'):
-        next(bed)
+    vcf_file= os.path.abspath(args.input)
+    vcf= openfile(vcf_file)
     all_lines= []
-    for line in bed:
+    for line in vcf:
         if line.startswith('#'):
             continue
         all_lines.append(1)
@@ -305,30 +309,20 @@ def main_extraction(args):
                          for x in range(0, len(all_lines), chunk)]
     all_lines = [all_lines[x:x+threads]
                          for x in range(0, len(all_lines), threads)]
-    bed.close()
-    bed= open(bed_file)
-    if bed_file.endswith('.bed'):
-        next(bed)
+    vcf.close()
+    vcf= openfile(vcf_file)
     with tqdm(total=len(all_lines),desc="Processing: ",
                       bar_format="{l_bar}{bar} [ Estimated time left:"
                       " {remaining} ]") as pbar:
-        for line in bed:
+        for line in vcf:
             if line.startswith('#'):
                 continue
             line=line.rstrip().split('\t')
             chrom= line[0]
-            if 'chr' not in chrom.lower():
-                chrom= 'chr'+chrom
-            if bed_file.endswith('.bed'):
-                windowinfo= (chrom, 
-                             int(line[1])-4,
-                             int(line[1])+5,
-                             int(line[1]))
-            else:
-                windowinfo= (chrom, 
-                             int(line[1])-4-1,
-                             int(line[1])+5-1,
-                             int(line[1])-1)
+            windowinfo= (chrom, 
+                         int(line[1])-4-1,
+                         int(line[1])+5-1,
+                         int(line[1])-1)
             if windowinfo not in window_list:
                 window_list.append(windowinfo)
                 if len(window_list) > chunk:
@@ -348,9 +342,9 @@ def main_extraction(args):
                     for freq_dict in results:
                         if freq_dict is not None:
                             for key,val in freq_dict.items():
-                                print(','.join(map(str,key)) + ',' + 
+                                sys.stdout.write(','.join(map(str,key)) + ',' + 
                                       ','.join(map(str,val[1])) +
-                                      ',' + str(mod_status))
+                                      ',' + str(mod_status)+'\n')
                     feed_list = []            
                     pbar.update(1)                    
                     
@@ -370,12 +364,12 @@ def main_extraction(args):
                 for freq_dict in results:
                     if freq_dict is not None:
                         for key,val in freq_dict.items():
-                            print(','.join(map(str,key)) + ',' + 
+                            sys.stdout.write(','.join(map(str,key)) + ',' + 
                                   ','.join(map(str,val[1])) + 
-                                  ',' + str(mod_status))
+                                  ',' + str(mod_status)+'\n')
                 pbar.update(1)                    
                 feed_list = []
-    bed.close()
+    vcf.close()
     sys.stderr.write("Job Finished\n")
 
 def main_prediction(args):
@@ -392,25 +386,26 @@ def main_prediction(args):
     threads= args.threads
     chunk= args.chunk_size
     reference= os.path.abspath(args.reference)
-    bed_file= os.path.abspath(args.input)
-    if not bed_file.endswith('.bed') and not bed_file.endswith('.vcf'):
-        raise TypeError("Input file is not a vcf or bed file.")
-    bed= open(bed_file)
-    if bed_file.endswith('.bed'):
-        next(bed)
+    vcf_file= os.path.abspath(args.input)
+    output= os.path.abspath(args.output)
+    if (not os.path.isfile(output+"_Predictions.vcf") and not 
+        os.path.isfile(output+"_Weighted_Qualities.vcf")):
+        out_preds= open(output+"_Predictions.vcf", 'w')
+        out_ready= open(output+"_Weighted_Qualities.vcf",'w')
+    else:
+        raise FileExistsError("Selected output files already exists.")
+    vcf= openfile(vcf_file)
     all_lines= []
-    for line in bed:
+    for line in vcf:
         if line.startswith('#'):
-            continue
+            out_ready.write(line)
         all_lines.append(1)
-    bed.close()
+    vcf.close()
     all_lines= [all_lines[x:x+chunk]
                          for x in range(0, len(all_lines), chunk)]
     all_lines= [all_lines[x:x+threads]
                          for x in range(0, len(all_lines), threads)]
-    bed= open(bed_file)
-    if bed_file.endswith('.bed'):
-        next(bed)
+    vcf= openfile(vcf_file)
     feed_list= list()
     windowinfo= dict()
     model_input= []
@@ -418,24 +413,15 @@ def main_prediction(args):
     with tqdm(total=len(all_lines),desc="Processing: ",
                       bar_format="{l_bar}{bar} [ Estimated time left: {remaining} ]"
                       ) as pbar:
-        for line in bed:
+        for line in vcf:
             if line.startswith('#'):
-                print(line.rstrip())
                 continue
             line_list= line.rstrip().split('\t')
             chrom= line_list[0]
-            if 'chr' not in chrom.lower():
-                chrom= 'chr'+chrom
-            if bed_file.endswith('.bed'):
-                windowinfo[(chrom, 
-                            int(line_list[1])-4,
-                            int(line_list[1])+5,
-                            int(line_list[1]))]= line.rstrip()
-            else:
-                windowinfo[(chrom, 
-                            int(line_list[1])-4-1,
-                            int(line_list[1])+5-1,
-                            int(line_list[1])-1)]= line.rstrip()
+            windowinfo[(chrom, 
+                        int(line_list[1])-4-1,
+                        int(line_list[1])+5-1,
+                        int(line_list[1])-1)]= line.rstrip()
             if len(list(windowinfo.keys())) == (chunk * threads):
                 feed_list= [list(windowinfo.keys())[x:x+chunk] 
                             for x in range(0, len(list(windowinfo.keys())),
@@ -469,9 +455,9 @@ def main_prediction(args):
                     cov= info_input[i][1]
                     key_windoinfo= info_input[i][2]
                     pred= float(predictions[i])
-                    print(windowinfo[key_windoinfo] + '\t' +
+                    out_preds.write(windowinfo[key_windoinfo] + '\t' +
                           '\t'.join(map(str,key)) + '\t' +
-                          str(cov) + '\t' + str(pred))
+                          str(cov) + '\t' + str(pred)+'\n')
                 model_input= []
                 info_input= []
                 windowinfo= dict()
@@ -511,13 +497,30 @@ def main_prediction(args):
                     cov= info_input[i][1]
                     key_windoinfo= info_input[i][2]
                     pred= float(predictions[i])
-                    print(windowinfo[key_windoinfo] + '\t' + 
+                    out_preds.write(windowinfo[key_windoinfo] + '\t' + 
                           '\t'.join(map(str,key)) + '\t' +
-                          str(cov)+'\t'+str(pred))
+                          str(cov)+'\t'+str(pred)+'\n')
                 windowinfo= dict()
                 feed_list = []
                 pbar.update(1)
-    bed.close()
+    vcf.close()
+    out_preds.close()
+    ready_dict= defaultdict(list)
+    with openfile(output+"_Predictions.vcf") as pred:
+        for line in pred:
+            line=line.rstrip().split('\t')
+            ready_dict[tuple(line[0:-7])].append(float(line[-1]))
+    for key,val in ready_dict.items():
+        if key[5].replace('.','',1).isdigit():
+            if not args.nine_mer:
+                weighted_qual= float(key[5]) * statistics.mean(val)
+                out_write= list(key[0:5])+[round(weighted_qual,4)]+list(key[6:])
+                out_ready.write('\t'.join(map(str,out_write))+'\n')
+            else:
+                weighted_qual= float(key[5]) * val[0]
+                out_write= list(key[0:5])+[round(weighted_qual,4)]+list(key[6:])
+                out_ready.write('\t'.join(map(str,out_write))+'\n')
+    out_ready.close()
     sys.stderr.write("Job Finished\n")
 
 def main_train(args):
@@ -625,6 +628,9 @@ def prediction_parser(subparsers):
                           required=True, default=None, help="The path to the "
                           "reference file. File must be indexed by samtools "
                           "faidx.")
+    sp_input.add_argument("--output", "-o", action="store", type=str,
+                          required=True, default=None, help="The path to the "
+                          "output directory and prefix for output file.")
     sp_input.add_argument("--mappingQuality", "-mq", action="store", type=int,
                           default= 0,required=False,help="Cutt off for filtering "
                           "out low quality mapped reads from bam. Default is 0")
@@ -749,3 +755,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
