@@ -2,21 +2,23 @@
 # coding=utf-8
 
 # Copyright (C) 2020  Vahid Akbari
- 
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, version 3.
- 
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
- 
+
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """
 SNVoter: A top up tool to enhance SNV calling from Nanopore sequencing data.
 """
+
 __author__ = "Vahid Akbari"
 __email__ = "vakbari@bcgsc.ca"
 __copyright__ = "Copyright (C) 2020, " + __author__
@@ -29,6 +31,7 @@ import numpy as np
 import random as rn
 import tensorflow as tf
 import warnings
+
 rn.seed(1)
 np.random.seed(1)
 tf.random.set_seed(1)
@@ -84,6 +87,7 @@ def precision(y_true, y_pred):
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision_m = true_positives / (predicted_positives + K.epsilon())
     return precision_m
+
 def F1(y_true, y_pred):
     """
     Function to calculate model F1 during training
@@ -164,9 +168,9 @@ def openfile(file):
 
 def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
     """
-    Function to calculate mutation frequenies and qualities (features). The features
-    then used by prediction or extraction mudules to be used for prediction or 
-    training a new model.
+    Function to calculate mutation frequenies and qualities (features). The
+    features then used by prediction or extraction mudules to be used for
+    prediction or training a new model.
     """
     encoder= {'A':[1,0,0,0], 'T':[0,1,0,0], 'C':[0,0,1,0], 'G':[0,0,0,1],
               'N':[0,0,0,0],'U':[0,1,0,0]}
@@ -187,12 +191,10 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
                           "was not found in the reference file"
                           "".format(chrom,windowstart,windowend))
             continue
-                
         window_seq=str(window_seq.upper())
         pileupcolumns= bam.pileup(chrom, windowstart, windowend,
                                   truncate= True,min_base_quality = 0,
                                   min_mapping_quality = mq)
-            
         refbase_index= 0
         del_list= []
         mis_list= []
@@ -209,8 +211,8 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
                 insertion= 0
                 mismatch= 0
                 quality= statistics.mean(pileupcolumn.get_query_qualities())
-                bases= pileupcolumn.get_query_sequences(mark_matches=True, 
-                                                        mark_ends=True, 
+                bases= pileupcolumn.get_query_sequences(mark_matches=True,
+                                                        mark_ends=True,
                                                         add_indels=True)
                 for base in bases:
                     base= base.upper()
@@ -224,7 +226,7 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
                         insertion += 1
                     else:
                         continue
-                del_list.append(deletion/coverage)  
+                del_list.append(deletion/coverage)
                 mis_list.append(mismatch/coverage)
                 ins_list.append(insertion/coverage)
                 qual_list.append(quality)
@@ -285,7 +287,7 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
         else:
             continue
     return freq_dict
-                                
+
 def main_extraction(args):
     """
     Extraction mudule to extract features for training a new model
@@ -332,7 +334,7 @@ def main_extraction(args):
                     p = mp.Pool(threads)
                     results = p.starmap(window_mutation,
                             list(zip(feed_list,
-                                     repeat(bam_file), 
+                                     repeat(bam_file),
                                      repeat(mq),
                                      repeat(reference),
                                      repeat(args.depth),
@@ -345,16 +347,15 @@ def main_extraction(args):
                                 sys.stdout.write(','.join(map(str,key)) + ',' + 
                                       ','.join(map(str,val[1])) +
                                       ',' + str(mod_status)+'\n')
-                    feed_list = []            
-                    pbar.update(1)                    
-                    
+                    feed_list = []
+                    pbar.update(1)
         else:
             if feed_list or window_list:
                 feed_list.append(window_list)
                 p = mp.Pool(len(feed_list))
                 results = p.starmap(window_mutation,
                         list(zip(feed_list,
-                                 repeat(bam_file), 
+                                 repeat(bam_file),
                                  repeat(mq),
                                  repeat(reference),
                                  repeat(args.depth),
@@ -418,12 +419,12 @@ def main_prediction(args):
                 continue
             line_list= line.rstrip().split('\t')
             chrom= line_list[0]
-            windowinfo[(chrom, 
+            windowinfo[(chrom,
                         int(line_list[1])-4-1,
                         int(line_list[1])+5-1,
                         int(line_list[1])-1)]= line.rstrip()
             if len(list(windowinfo.keys())) == (chunk * threads):
-                feed_list= [list(windowinfo.keys())[x:x+chunk] 
+                feed_list= [list(windowinfo.keys())[x:x+chunk]
                             for x in range(0, len(list(windowinfo.keys())),
                                            chunk)]
                 p = mp.Pool(threads)
@@ -462,7 +463,7 @@ def main_prediction(args):
                 info_input= []
                 windowinfo= dict()
                 feed_list = []
-                pbar.update(1)  
+                pbar.update(1)
         else:
             if windowinfo:
                 feed_list= [list(windowinfo.keys())[x:x+chunk]
@@ -471,7 +472,7 @@ def main_prediction(args):
                 p = mp.Pool(threads)
                 results = p.starmap(window_mutation,
                         list(zip(feed_list,
-                                 repeat(bam_file), 
+                                 repeat(bam_file),
                                  repeat(mq),
                                  repeat(reference),
                                  repeat(args.depth),
@@ -497,7 +498,7 @@ def main_prediction(args):
                     cov= info_input[i][1]
                     key_windoinfo= info_input[i][2]
                     pred= float(predictions[i])
-                    out_preds.write(windowinfo[key_windoinfo] + '\t' + 
+                    out_preds.write(windowinfo[key_windoinfo] + '\t' +
                           '\t'.join(map(str,key)) + '\t' +
                           str(cov)+'\t'+str(pred)+'\n')
                 windowinfo= dict()
@@ -556,42 +557,41 @@ def main_train(args):
     # Initialising the ANN
     initializer = keras.initializers.glorot_uniform(seed=1)
     classifier = Sequential()
-    classifier.add(Dense(activation="relu", 
-                         input_dim=inputdim, 
+    classifier.add(Dense(activation="relu",
+                         input_dim=inputdim,
                          units=inputdim,
                          kernel_initializer=initializer))
-    classifier.add(Dense(activation="relu", 
-                         units=inputdim * 2, 
+    classifier.add(Dense(activation="relu",
+                         units=inputdim * 2,
                          kernel_initializer=initializer))
-    classifier.add(Dense(activation="relu", 
-                         units=inputdim, 
+    classifier.add(Dense(activation="relu",
+                         units=inputdim,
                          kernel_initializer=initializer))
-    classifier.add(Dense(activation="relu", 
-                         units=round(inputdim/2), 
+    classifier.add(Dense(activation="relu",
+                         units=round(inputdim/2),
                          kernel_initializer=initializer))
-    classifier.add(Dense(activation="sigmoid", 
-                         units=1, 
+    classifier.add(Dense(activation="sigmoid",
+                         units=1,
                          kernel_initializer=initializer))
-    classifier.compile(optimizer = 'adam', 
-                       loss = 'binary_crossentropy', 
+    classifier.compile(optimizer = 'adam',
+                       loss = 'binary_crossentropy',
                        metrics = ['accuracy',F1,precision, recall])
     # Fitting the ANN to the Training set
     checkpointer = ModelCheckpoint(filepath=outmodel,
-                                   monitor='val_loss', 
+                                   monitor='val_loss',
                                    save_best_only=True,
                                    verbose=1)
 
     history= classifier.fit(X_train,
                             y_train,
-                            validation_data= (test_val, test_label), 
-                            batch_size = batch_num, 
+                            validation_data= (test_val, test_label),
+                            batch_size = batch_num,
                             epochs = epoch_num,
                             callbacks=[checkpointer],
                             shuffle=False,verbose=1)
 
     y_predictions = classifier.predict(test_val)
     y_pred = (y_predictions > 0.5)
-    
     out_cm= output + "_Test_prediction_ConfusionMatrix.tsv"
     cm = confusion_matrix(test_label, y_pred)
     print(cm,file=open(out_cm,'w'))
@@ -600,7 +600,7 @@ def main_train(args):
     fpr_keras, tpr_keras, thresholds_keras = roc_curve(test_label,
                                                        y_pred_keras)
     if args.plot:
-        model_plot(fpr_keras, 
+        model_plot(fpr_keras,
                    tpr_keras,
                    output,
                    history.history)
@@ -612,18 +612,17 @@ def prediction_parser(subparsers):
     """
     sub_prediction = subparsers.add_parser(
         "prediction",
-        description=("Predict based on a model.\n"))
-    sp_input = sub_prediction.add_argument_group("INPUT\n.")
+        help="predict using a model",
+        description=("Predict based on a model."))
+    sp_input = sub_prediction.add_argument_group("required arguments")
     sp_input.add_argument("--input", "-i", action="store", type=str,
                           required=True,help="The path to the input "
                           "vcf or bed file. NOTE. Files must end with "
                           ".bed or .vcf. vcf files are 1-based and beds "
-                          "are zero-based") 
-    sp_input.add_argument("--model_file", "-mf", type=str, action="store",
-                          required=True,help="Pathn to the trained model.") 
-    sp_input.add_argument("--bam", "-b", action="store", type=str, 
+                          "are zero-based")
+    sp_input.add_argument("--bam", "-b", action="store", type=str,
                           required=True,help="The path to the alignment bam "
-                          "file") 
+                          "file")
     sp_input.add_argument("--reference", "-r", action="store", type=str,
                           required=True, default=None, help="The path to the "
                           "reference file. File must be indexed by samtools "
@@ -631,14 +630,23 @@ def prediction_parser(subparsers):
     sp_input.add_argument("--output", "-o", action="store", type=str,
                           required=True, default=None, help="The path to the "
                           "output directory and prefix for output file.")
+    sp_input = sub_prediction.add_argument_group("optional arguments")
+    sp_input.add_argument("--model_file", "-mf", type=str, action="store",
+                          required=False,
+                          default=os.path.join(os.path.dirname(
+                                                   os.path.realpath(__file__)),
+                                               "model",
+                                               "NA12878_20FC_model.h5"),
+                          help="Path to the trained model. Default is "
+                               "NA12878_20FC_model.h5")
     sp_input.add_argument("--mappingQuality", "-mq", action="store", type=int,
                           default= 0,required=False,help="Cutt off for filtering "
                           "out low quality mapped reads from bam. Default is 0")
-    sp_input.add_argument("--depth", "-d", action="store", type=int, 
+    sp_input.add_argument("--depth", "-d", action="store", type=int,
                           default= 1, required=False, help="Cutt off for "
                           "filtering out regions with low depth to have "
                           "frequencies. Default >= 1")
-    sp_input.add_argument("--window_bam", "-w", action="store", type=str, 
+    sp_input.add_argument("--window_bam", "-w", action="store", type=str,
                           required=False, help="if you want to only do for a "
                           "region or chromosom You must insert region like "
                           "this chr1 or chr1:1000-100000.")
@@ -649,7 +657,7 @@ def prediction_parser(subparsers):
                           required=False, default=4, help="Number of threads. "
                           "Default is 4.")
     sp_input.add_argument("--chunk_size", "-cs", action="store", type=int,
-                          required=False, default=100, help="Chunk size ."
+                          required=False, default=100, help="Chunk size. "
                           "Default is 100.")
     sub_prediction.set_defaults(func=main_prediction)
 
@@ -659,31 +667,33 @@ def extraction_parser(subparsers):
     """
     sub_extraction = subparsers.add_parser(
         "extraction",
-        description=("Extract mutation frequencicies in 5-mer window.\n"))
-    se_input = sub_extraction.add_argument_group("INPUT\n.")
+        help="extract features",
+        description=("Extract mutation frequencicies in 5-mer window."))
+    se_input = sub_extraction.add_argument_group("required arguments")
     se_input.add_argument("--input", "-i", action="store", type=str,
                           required=True, help="The path to the input vcf or "
                           "bed file. NOTE. Files must end with .bed or .vcf. "
-                          "vcf files are 1-based and beds are zero-based") 
-    se_input.add_argument("--mod_status", "-ms", type=int,action="store", 
+                          "vcf files are 1-based and beds are zero-based")
+    se_input.add_argument("--mod_status", "-ms", type=int,action="store",
                           required=True, help= "0 or 1. If you are extracting "
-                          "frequencies to train a model, give the" 
+                          "frequencies to train a model, give the"
                         " modification status for your bed file either it is "
-                        "modified (1) or unmodified (0) regions.") 
+                        "modified (1) or unmodified (0) regions.")
     se_input.add_argument("--bam", "-b", action="store", type=str,
                           required= True, help= "The path to the alignment "
-                          "bam file") 
+                          "bam file")
     se_input.add_argument("--reference", "-r", action="store", type=str,
                           required=True, default=None, help="The path to the "
                           "reference file. File must be indexed by samtools "
                           "faidx")
+    se_input = sub_extraction.add_argument_group("optional arguments")
     se_input.add_argument("--mappingQuality", "-mq", action="store", type=int,
                           default= 0,required=False,help="Cutt off for filtering "
                           "out low quality mapped reads from bam. Default is 0")
     se_input.add_argument("--depth", "-d", action="store", type=int,default= 1,
                           required=False,help="Cutt off for filtering out regions "
                           "with low depth to have frequencies. Default >=1")
-    se_input.add_argument("--window_bam", "-w", action="store", type=str, 
+    se_input.add_argument("--window_bam", "-w", action="store", type=str,
                           required=False, help= "if you want to only do for a "
                           "region or chromosom, you must insert region like "
                           "this chr1 or chr1:1000-100000.")
@@ -704,30 +714,31 @@ def train_parser(subparsers):
     """
     sub_train = subparsers.add_parser(
         "train",
-        description=("train a new model.\n"))
-    st_input = sub_train.add_argument_group("INPUT")
+        help="train a new model",
+        description=("train a new model"))
+    st_input = sub_train.add_argument_group("required arguments")
     st_input.add_argument("--train", "-tr", action="store", type=str,
                           required= True, help= "The path to the shuffled and "
-                          "ready file for training\n") 
+                          "ready file for training")
     st_input.add_argument("--test", "-te", action="store", type=str,
                           required= True, help= "The path to the shuffled and "
-                          "ready file for testing.\n") 
+                          "ready file for testing.")
+    st_input.add_argument("--out_dir", "-o", action="store", type=str,
+                          required= True, help= "Output directory and prefix "
+                          "for saving the model and figures")
+    st_input = sub_train.add_argument_group("optional arguments")
     st_input.add_argument("--epochs", "-e", action="store", type=int,
                           default= 100, required= False, help= "Number of "
                           "epochs. Default is 100")
     st_input.add_argument("--batch_size", "-batch", action="store", type=int,
                           required= False, default= 400, help= "batch size for "
                           "model training. Default is 400.")
-    st_input.add_argument("--out_dir", "-o", action="store", type=str,
-                          required= True, help= "Output directory and prefix "
-                          "for saving the model and figures")
-    st_input.add_argument("--plot", "-plt", action= "store_true", 
+    st_input.add_argument("--plot", "-plt", action= "store_true",
                           required= False, help= "Select this option if you "
                           "wish to output training plots.")
-    st_input.add_argument("--nine_mer", "-nm", action= "store_true", 
+    st_input.add_argument("--nine_mer", "-nm", action= "store_true",
                           required= False, help="Training for 9-mer. "
                           "Default is five mer")
-
     sub_train.set_defaults(func=main_train)
 
 def main():
@@ -735,14 +746,10 @@ def main():
     Docstring placeholder.
     """
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawTextHelpFormatter,
-        prog="snv_voter: Voting for snvs\n",
-        description=("\t\t\tModules\n"
-                     "extraction: Extract Features\n"
-                     "prediction: Predict using model.\n"
-                     "train: train a new model.\n"))
-    subparsers = parser.add_subparsers(title="\t\t\tModules\n",
-                                       help='use -h/--help for help')
+#        formatter_class=argparse.RawTextHelpFormatter, #  It's bad habit
+        prog="snvoter",
+        description=("SNVoter: Voting for SNVs"))
+    subparsers = parser.add_subparsers(title="Modules")
     extraction_parser(subparsers)
     prediction_parser(subparsers)
     train_parser(subparsers)
@@ -755,4 +762,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
