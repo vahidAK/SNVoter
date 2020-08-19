@@ -26,22 +26,13 @@ __license__ = "GPLv3"
 __collaborator__ = "Jean-Michel Garant"
 
 import os
-os.environ['PYTHONHASHSEED'] = '0'
 import numpy as np
 import random as rn
 import tensorflow as tf
 import warnings
-
-rn.seed(1)
-np.random.seed(1)
-tf.random.set_seed(1)
-
-#The tensorflow version is 2.1.0
-#The scikit-learn version is 0.21.3
 import sys
 import multiprocessing as mp
 import argparse
-import os
 import pysam
 from matplotlib import pyplot as plt
 from tqdm import tqdm
