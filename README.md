@@ -10,7 +10,7 @@ Using the pypi repository.
 ```
 pip install snvoter
 ```
-**NOTE:** NanoMethPhase needs python 3.7  
+**NOTE:** SNVoter needs python 3.7  
 From source.
 
 ```
