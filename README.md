@@ -77,5 +77,5 @@ The plot usually looks like the following plots:
 The optimal threshold is the end of the first peak and start of the valley
 (highlighted regions).
 
-By default SNVoter will use model file trained by us using NA12878 20 flow cells and you do not need to specify path to the model if you want to use our model.
+By default SNVoter will use the model file trained by us using NA12878 20 flow cells and you do not need to specify path to the model if you want to use our model.  
 We have included an example data in the Example_data folder which you can use for a quick prediction.
