@@ -4,7 +4,6 @@ SNVoter
 Improving SNV detection from low coverage nanopore sequencing data (<30x).
 
 ## Installation
-**NOTE:** SNVoter wrote in Python 3.7.4 and needs this version of python.  
 Using the pypi repository.
 
 ```
