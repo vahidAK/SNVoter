@@ -28,7 +28,7 @@ repository.
 
 ```
 git clone https://github.com/vahidAK/SNVoter.git
-conda env create -f SNVoter/env/environment.yaml
+conda env create -f SNVoter/envs/environment.yaml
 conda activate snvoter
 ```
 
