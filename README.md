@@ -1,7 +1,8 @@
 SNVoter
 =======
-
-**Improving SNV detection from low coverage nanopore sequencing data (<30x)**  
+  
+**Improving SNV detection from low coverage nanopore sequencing data (<30x)**
+  
 Table of Contents
 =================
 
