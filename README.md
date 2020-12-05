@@ -8,18 +8,14 @@ Table of Contents
 * **[Installation](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#installation)**
   * [Using pip](https://github.com/vahidAK/SNVoter#using-pip)
   * [From source](https://github.com/vahidAK/SNVoter#from-source)
-* **[SNVoter Modules](https://github.com/vahidAK/SNVoter/blob/master/README.md#nanomethphase-modules)**
-  * [methyl_call_processor](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#methyl_call_processor)
-  * [phase](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#phase)
-  * [dma](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#dma)
-  * [bam2bis](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#bam2bis)
-* **[Quickstart](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#quickstart)**
-* **[Full Tutorial](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#full-tutorial)**
-  * [Methylation Calling](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#1--methylation-calling)
-  * [Variant Calling](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#2--variant-calling)
-  * [SNV Phasing](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#3--phasing-of-detected-snvs)
-  * [Detecting Haplotype Methylome](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#4--detecting-haplotype-methylome)  
-* **[Example](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#example)**
+* **[SNVoter Modules](https://github.com/vahidAK/SNVoter#snvoter-modules)**
+  * [prediction](https://github.com/vahidAK/SNVoter#prediction)
+  * [extraction](https://github.com/vahidAK/SNVoter#extraction)
+  * [train](https://github.com/vahidAK/SNVoter#train)
+* **[Tutorial](https://github.com/vahidAK/SNVoter#tutorial)**
+  * [Variant Calling](https://github.com/vahidAK/SNVoter#variant-calling)
+  * [Improving SNV calling using SNVoter](https://github.com/vahidAK/SNVoter#improving-snv-calling-using-snvoter)
+* **[Example](https://github.com/vahidAK/SNVoter#example)**
   
 # Installation
 **NOTE:** SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their
@@ -182,7 +178,7 @@ for i in chr{1..22} chrX chrY; do callVarBam --chkpnt_fn <path to model file> --
 For the full tutorial please refer to [Clair](https://github.com/HKU-BAL/Clair)
 page on GitHub.
 
-## Improving Clair's variant calling using SNVoter:
+## Improving SNV calling using SNVoter:
 
 ```
 snvoter prediction -i <SNVs_Clair.vcf> -b <sorted_indexed.bam> -mf <path to model file (model.h5)> -r <reference_genome.fa> -t number_of_threads -o output_prefix
@@ -212,4 +208,6 @@ The optimal threshold is the end of the first peak and start of the valley
 (highlighted regions).
 
 By default SNVoter will use the model file trained by us using NA12878 20 flow cells and you do not need to specify path to the model if you want to use our model.  
+
+# Example
 We have included an example data in the Example_data folder which you can use for a quick prediction.
