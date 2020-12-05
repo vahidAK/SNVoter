@@ -2,33 +2,48 @@ SNVoter
 =======
 
 Improving SNV detection from low coverage nanopore sequencing data (<30x).
+Table of Contents
+=================
 
-## Installation
-Using the pypi repository.
+* **[Installation](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#installation)**
+  * [Using pip](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#using-pypi-repository-pip)
+  * [From source](https://github.com/vahidAK/NanoMethPhase#from-source)
+  * [Using Docker](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#using-docker-image)
+* **[NanoMethPhase Modules](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#nanomethphase-modules)**
+  * [methyl_call_processor](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#methyl_call_processor)
+  * [phase](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#phase)
+  * [dma](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#dma)
+  * [bam2bis](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#bam2bis)
+* **[Quickstart](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#quickstart)**
+* **[Full Tutorial](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#full-tutorial)**
+  * [Methylation Calling](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#1--methylation-calling)
+  * [Variant Calling](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#2--variant-calling)
+  * [SNV Phasing](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#3--phasing-of-detected-snvs)
+  * [Detecting Haplotype Methylome](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#4--detecting-haplotype-methylome)  
+* **[Example](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#example)**
+  
+# Installation
+**NOTE:** SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their
+default python instance. Then activate the environment and install SNVoter using pip or you can clone the git repo and use it from source.  
+You can make the conda environment and install all dependencies by downloading the [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/) file and running these lines of codes:  
+
+```
+conda env create -f environment.yaml
+conda activate snvoter
+```
+Now you can install SNVoter using pip or use it from source in the dedicated environment with all dependencies installed.  
+## Using pip
 
 ```
 pip install snvoter
 ```
-**NOTE:** SNVoter needs python 3.7  
-From source.
+
+## From source
 
 ```
 git clone https://github.com/vahidAK/SNVoter.git
 cd SNVoter
 ./snvoter.py
-```
-
-## Creation of a dedicated conda environment
-
-SNVoter uses several fixed versions of its dependencies. Users are encouraged
-to use a conda or similar environment to isolate the packages from their
-default python instance. An environment file is available in the GitHub
-repository.
-
-```
-git clone https://github.com/vahidAK/SNVoter.git
-conda env create -f SNVoter/envs/environment.yaml
-conda activate snvoter
 ```
 
 # Tutorial
