@@ -6,10 +6,9 @@ Table of Contents
 =================
 
 * **[Installation](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#installation)**
-  * [Using pip](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#using-pypi-repository-pip)
-  * [From source](https://github.com/vahidAK/NanoMethPhase#from-source)
-  * [Using Docker](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#using-docker-image)
-* **[NanoMethPhase Modules](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#nanomethphase-modules)**
+  * [Using pip](https://github.com/vahidAK/SNVoter#using-pip)
+  * [From source](https://github.com/vahidAK/SNVoter#from-source)
+* **[SNVoter Modules](https://github.com/vahidAK/SNVoter/blob/master/README.md#nanomethphase-modules)**
   * [methyl_call_processor](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#methyl_call_processor)
   * [phase](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#phase)
   * [dma](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#dma)
@@ -45,7 +44,128 @@ git clone https://github.com/vahidAK/SNVoter.git
 cd SNVoter
 ./snvoter.py
 ```
+# SNVoter Modules
+## prediction:
+To predict dtetedte SNVs are true calls or false positives.
+```
+usage: snvoter prediction [-h] --input INPUT --bam BAM --reference REFERENCE
+                          --output OUTPUT [--model_file MODEL_FILE]
+                          [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
+                          [--window_bam WINDOW_BAM] [--nine_mer]
+                          [--threads THREADS] [--chunk_size CHUNK_SIZE]
 
+Predict based on a model.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+required arguments:
+  --input INPUT, -i INPUT
+                        The path to the input vcf or bed file. NOTE. Files
+                        must end with .bed or .vcf. vcf files are 1-based and
+                        beds are zero-based
+  --bam BAM, -b BAM     The path to the alignment bam file
+  --reference REFERENCE, -r REFERENCE
+                        The path to the reference file. File must be indexed
+                        by samtools faidx.
+  --output OUTPUT, -o OUTPUT
+                        The path to the output directory and prefix for output
+                        file.
+
+optional arguments:
+  --model_file MODEL_FILE, -mf MODEL_FILE
+                        Path to the trained model. Default is
+                        NA12878_20FC_model.h5
+  --mappingQuality MAPPINGQUALITY, -mq MAPPINGQUALITY
+                        Cutt off for filtering out low quality mapped reads
+                        from bam. Default is 0
+  --depth DEPTH, -d DEPTH
+                        Cutt off for filtering out regions with low depth to
+                        have frequencies. Default >= 1
+  --window_bam WINDOW_BAM, -w WINDOW_BAM
+                        if you want to only do for a region or chromosom You
+                        must insert region like this chr1 or chr1:1000-100000.
+  --nine_mer, -nm       Prediction for 9-mer. Default is five mer
+  --threads THREADS, -t THREADS
+                        Number of threads. Default is 4.
+  --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
+                        Chunk size. Default is 100.
+```
+## extraction:
+Extract features to train a new model.
+```
+usage: snvoter extraction [-h] --input INPUT --mod_status MOD_STATUS --bam BAM
+                          --reference REFERENCE
+                          [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
+                          [--window_bam WINDOW_BAM] [--nine_mer]
+                          [--threads THREADS] [--chunk_size CHUNK_SIZE]
+
+Extract mutation frequencicies in 5-mer window.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+required arguments:
+  --input INPUT, -i INPUT
+                        The path to the input vcf or bed file. NOTE. Files
+                        must end with .bed or .vcf. vcf files are 1-based and
+                        beds are zero-based
+  --mod_status MOD_STATUS, -ms MOD_STATUS
+                        0 or 1. If you are extracting frequencies to train a
+                        model, give the modification status for your bed file
+                        either it is modified (1) or unmodified (0) regions.
+  --bam BAM, -b BAM     The path to the alignment bam file
+  --reference REFERENCE, -r REFERENCE
+                        The path to the reference file. File must be indexed
+                        by samtools faidx
+
+optional arguments:
+  --mappingQuality MAPPINGQUALITY, -mq MAPPINGQUALITY
+                        Cutt off for filtering out low quality mapped reads
+                        from bam. Default is 0
+  --depth DEPTH, -d DEPTH
+                        Cutt off for filtering out regions with low depth to
+                        have frequencies. Default >=1
+  --window_bam WINDOW_BAM, -w WINDOW_BAM
+                        if you want to only do for a region or chromosom, you
+                        must insert region like this chr1 or chr1:1000-100000.
+  --nine_mer, -nm       Extraction for 9-mer. Default is five mer
+  --threads THREADS, -t THREADS
+                        Number of threads
+  --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
+                        Number of sites send to each processes for parrallel
+                        processing. Default is 50.
+```
+## train:
+To train a new model using extracted features.
+```
+usage: snvoter train [-h] --train TRAIN --test TEST --out_dir OUT_DIR
+                     [--epochs EPOCHS] [--batch_size BATCH_SIZE] [--plot]
+                     [--nine_mer]
+
+train a new model
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+required arguments:
+  --train TRAIN, -tr TRAIN
+                        The path to the shuffled and ready file for training
+  --test TEST, -te TEST
+                        The path to the shuffled and ready file for testing.
+  --out_dir OUT_DIR, -o OUT_DIR
+                        Output directory and prefix for saving the model and
+                        figures
+
+optional arguments:
+  --epochs EPOCHS, -e EPOCHS
+                        Number of epochs. Default is 100
+  --batch_size BATCH_SIZE, -batch BATCH_SIZE
+                        batch size for model training. Default is 400.
+  --plot, -plt          Select this option if you wish to output training
+                        plots.
+  --nine_mer, -nm       Training for 9-mer. Default is five mer
+```
 # Tutorial
 
 ## Variant Calling
