@@ -1,7 +1,7 @@
-SNVoter
+![SNVoter](docs/images/SNVoter.png)
 =======
   
-**Improving SNV detection from low coverage nanopore sequencing data (<30x)**
+**Improving SNV detection from low coverage nanopore sequencing data (<30x)** 
   
 Table of Contents
 =================
@@ -202,7 +202,9 @@ columns are from vcf file and the last seven columns indicate:
 the distribution of weighted quality to obtain optimal threshold for filtering.
 The plot usually looks like the following plots:
 ![Quality distribution of 10x coverage data](docs/images/QualDist10x.png)
+  
 ![Quality distribution of 18x coverage data](docs/images/QualDist18x.png)
+  
 ![Quality distribution of 22x coverage data](docs/images/QualDist22x.png)
 
 The optimal threshold is the end of the first peak and start of the valley
