@@ -105,13 +105,11 @@ optional arguments:
 
 required arguments:
   --input INPUT, -i INPUT
-                        The path to the input vcf or bed file. NOTE. Files
-                        must end with .bed or .vcf. vcf files are 1-based and
-                        beds are zero-based
-  --mod_status MOD_STATUS, -ms MOD_STATUS
+                        The path to the input vcf file.
+  --status MOD_STATUS, -s STATUS
                         0 or 1. If you are extracting frequencies to train a
-                        model, give the modification status for your bed file
-                        either it is modified (1) or unmodified (0) regions.
+                        model, give the status for your vcf file
+                        either it is true calls (1) or false calls (0).
   --bam BAM, -b BAM     The path to the alignment bam file
   --reference REFERENCE, -r REFERENCE
                         The path to the reference file. File must be indexed
@@ -232,6 +230,6 @@ snvoter train -tr training_set.csv -te test_set.csv -o ./Trained_model --plot
 ```
 Training will produce a .h5 file and a .h5.pkl file. If --plot option selected it will also output accuracy, precision, recall, loss, and ROC plots.
 In order to use this model via the ```snvoter prediction``` module, the .h5 and .h5.pkl files must be in the same directory and just give the path to the .h5 file using the ```--model_file``` flag.  
-
+**NOTE**: We use the 5-bp window (5-mer). Therfore for given SNV there are five possible 5-mers. For example ATCC(SNV)CTAG can be represented as ATCC(SNV), TCC(SNV)C, CC(SNV)CT C(SNV)CTA, and (SNV)CTAG. By default the extraction, training, and prediction modules are using 5-mers. As you see this will finally capture a 9-mer sequence with SNV in the middle. Therefore, during prediction process the final prediction will be the avarage of the 5 predictions for each SNV. You can also train model and predict on 9-mers instead of 5-mers by selecting the ```--nine_mer``` flag.
 # Example
 We have included an example data in the Example_data folder which you can use for a quick prediction.
