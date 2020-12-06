@@ -662,14 +662,12 @@ def extraction_parser(subparsers):
         description=("Extract mutation frequencicies in 5-mer window."))
     se_input = sub_extraction.add_argument_group("required arguments")
     se_input.add_argument("--input", "-i", action="store", type=str,
-                          required=True, help="The path to the input vcf or "
-                          "bed file. NOTE. Files must end with .bed or .vcf. "
-                          "vcf files are 1-based and beds are zero-based")
-    se_input.add_argument("--mod_status", "-ms", type=int,action="store",
+                          required=True, help="The path to the input vcf")
+    se_input.add_argument("--status", "-s", type=int,action="store",
                           required=True, help= "0 or 1. If you are extracting "
                           "frequencies to train a model, give the"
-                        " modification status for your bed file either it is "
-                        "modified (1) or unmodified (0) regions.")
+                        " status for your vcf file either it is "
+                        "true SNVs (1) or false calls (0).")
     se_input.add_argument("--bam", "-b", action="store", type=str,
                           required= True, help= "The path to the alignment "
                           "bam file")
