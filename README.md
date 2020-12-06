@@ -219,7 +219,7 @@ In order to train a new model you need to have two vcf file. One for true SNVs a
 ### Extracting Features:
 ```
 snvoter extraction -i True_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 > Extracted_Features.csv
-snvoter extraction -i False_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 >> Extracted_Features.csv
+snvoter extraction -i False_SNVs.vcf -b alignment.bam -r reference.fa -s 0 -t 24 >> Extracted_Features.csv
 ```
 After extracting the features you need to shuffle the file.  
 ```
