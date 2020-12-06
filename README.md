@@ -16,7 +16,7 @@ Table of Contents
 * **[Tutorial](https://github.com/vahidAK/SNVoter#tutorial)**
   * [Variant Calling](https://github.com/vahidAK/SNVoter#variant-calling)
   * [Improving SNV calling using SNVoter](https://github.com/vahidAK/SNVoter#improving-snv-calling-using-snvoter)
-  * [Train a New Model](https://github.com/vahidAK/SNVoter#train_a_new_model)
+  * [Train a New Model](https://github.com/vahidAK/SNVoter#train-a-new-model)
 * **[Example](https://github.com/vahidAK/SNVoter#example)**
   
 # Installation
