@@ -16,6 +16,7 @@ Table of Contents
 * **[Tutorial](https://github.com/vahidAK/SNVoter#tutorial)**
   * [Variant Calling](https://github.com/vahidAK/SNVoter#variant-calling)
   * [Improving SNV calling using SNVoter](https://github.com/vahidAK/SNVoter#improving-snv-calling-using-snvoter)
+  * [Train a New Model](https://github.com/vahidAK/SNVoter#train_a_new_model)
 * **[Example](https://github.com/vahidAK/SNVoter#example)**
   
 # Installation
@@ -165,7 +166,7 @@ optional arguments:
 ```
 # Tutorial
 
-## Variant Calling
+## Variant Calling:
 
 You first need to call variants using [Clair](https://github.com/HKU-BAL/Clair)
 
@@ -212,6 +213,22 @@ The optimal threshold is the end of the first peak and start of the valley
 (highlighted regions).
 
 By default SNVoter will use the model file trained by us using NA12878 20 flow cells and you do not need to specify path to the model if you want to use our model.  
-
+  
+## Train a New Model:
+In order to train a new model you need to have two vcf file. One for true SNVs and the other for false positive SNV call. Having these data allows you to then extract the features using ```snvoter extraction``` module. Subsequently you can train the model on extracted features using the ```snvoter train``` module.  
+### Extracting Features:
+```
+snvoter extraction -i True_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 > Extracted_Features.csv
+snvoter extraction -i False_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 >> Extracted_Features.csv
+```
+After extracting the features you need to shuffle the file.  
+```
+cat Extracted_Features.csv | shuf | shuf | shuf > Shuffled_Extracted_Features.csv
+```
+Subsequently seperate the shuffled file into training and test set as you wish.  
+### Training the Modle
+```
+snvoter train -tr training_set.csv -te test_set.csv -o ./Trained_model --plot
+```
 # Example
 We have included an example data in the Example_data folder which you can use for a quick prediction.
