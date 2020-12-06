@@ -230,5 +230,8 @@ Subsequently seperate the shuffled file into training and test set as you wish.
 ```
 snvoter train -tr training_set.csv -te test_set.csv -o ./Trained_model --plot
 ```
+Training will produce a .h5 file and a .h5.pkl file. If --plot option selected it will also output accuracy, precision, recall, loss, and ROC plots.
+In order to use this model via the ```snvoter prediction``` module, the .h5 and .h5.pkl files must be in the same directory and just give the path to the .h5 file using the -mf flag.  
+
 # Example
 We have included an example data in the Example_data folder which you can use for a quick prediction.
