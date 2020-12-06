@@ -49,7 +49,7 @@ To predict dtetedte SNVs are true calls or false positives.
 usage: snvoter prediction [-h] --input INPUT --bam BAM --reference REFERENCE
                           --output OUTPUT [--model_file MODEL_FILE]
                           [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
-                          [--window_bam WINDOW_BAM] [--nine_mer]
+                          [--window_bam WINDOW_BAM]
                           [--threads THREADS] [--chunk_size CHUNK_SIZE]
 
 Predict based on a model.
@@ -83,7 +83,6 @@ optional arguments:
   --window_bam WINDOW_BAM, -w WINDOW_BAM
                         if you want to only do for a region or chromosom You
                         must insert region like this chr1 or chr1:1000-100000.
-  --nine_mer, -nm       Prediction for 9-mer. Default is five mer
   --threads THREADS, -t THREADS
                         Number of threads. Default is 4.
   --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
@@ -92,10 +91,10 @@ optional arguments:
 ## extraction:
 Extract features to train a new model.
 ```
-usage: snvoter extraction [-h] --input INPUT --mod_status MOD_STATUS --bam BAM
+usage: snvoter extraction [-h] --input INPUT --status STATUS --bam BAM
                           --reference REFERENCE
                           [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
-                          [--window_bam WINDOW_BAM] [--nine_mer]
+                          [--window_bam WINDOW_BAM]
                           [--threads THREADS] [--chunk_size CHUNK_SIZE]
 
 Extract mutation frequencicies in 5-mer window.
@@ -125,7 +124,6 @@ optional arguments:
   --window_bam WINDOW_BAM, -w WINDOW_BAM
                         if you want to only do for a region or chromosom, you
                         must insert region like this chr1 or chr1:1000-100000.
-  --nine_mer, -nm       Extraction for 9-mer. Default is five mer
   --threads THREADS, -t THREADS
                         Number of threads
   --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
@@ -137,7 +135,6 @@ To train a new model using extracted features.
 ```
 usage: snvoter train [-h] --train TRAIN --test TEST --out_dir OUT_DIR
                      [--epochs EPOCHS] [--batch_size BATCH_SIZE] [--plot]
-                     [--nine_mer]
 
 train a new model
 
@@ -160,7 +157,6 @@ optional arguments:
                         batch size for model training. Default is 400.
   --plot, -plt          Select this option if you wish to output training
                         plots.
-  --nine_mer, -nm       Training for 9-mer. Default is five mer
 ```
 # Tutorial
 
@@ -230,6 +226,6 @@ snvoter train -tr training_set.csv -te test_set.csv -o ./Trained_model --plot
 ```
 Training will produce a .h5 file and a .h5.pkl file. If --plot option selected it will also output accuracy, precision, recall, loss, and ROC plots.
 In order to use this model via the ```snvoter prediction``` module, the .h5 and .h5.pkl files must be in the same directory and just give the path to the .h5 file using the ```--model_file``` flag.  
-**NOTE**: We use the 5-bp window (5-mer). Therfore for a given SNV there are five possible 5-mers. For example ATCC(SNV)CTAG can be represented as ATCC(SNV), TCC(SNV)C, CC(SNV)CT, C(SNV)CTA, and (SNV)CTAG. By default the extraction, training, and prediction modules are using 5-mers. As explained, this will finally capture a 9-mer sequence with SNV in the middle. Therefore, during prediction process the final prediction will be the avarage of all the 5 predictions for each SNV. However, You can also train a model and predict on 9-mers instead of 5-mers by selecting the ```--nine_mer``` flag during extraction, training and prediction.
+  
 # Example
 We have included an example data in the Example_data folder which you can use for a quick prediction.
