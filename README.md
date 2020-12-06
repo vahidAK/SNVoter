@@ -182,7 +182,7 @@ page on GitHub.
 ## Improving SNV calling using SNVoter:
 
 ```
-snvoter prediction -i <SNVs_Clair.vcf> -b <sorted_indexed.bam> -mf <path to model file (model.h5)> -r <reference_genome.fa> -t number_of_threads -o output_prefix
+snvoter prediction -i <SNVs_Clair.vcf> -b <sorted_indexed.bam> -r <reference_genome.fa> -t number_of_threads -o output_prefix
 ```
 
 It will produce two files.
