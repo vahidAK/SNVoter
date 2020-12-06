@@ -215,7 +215,7 @@ The optimal threshold is the end of the first peak and start of the valley
 By default SNVoter will use the model file trained by us using NA12878 20 flow cells and you do not need to specify path to the model if you want to use our model.  
   
 ## Train a New Model:
-In order to train a new model you need to have two vcf file. One for true SNVs and the other for false positive SNV call. Having these data allows you to then extract the features using ```snvoter extraction``` module. Subsequently you can train the model on extracted features using the ```snvoter train``` module.  
+In order to train a new model you need to have two vcf files. One for true SNVs and the other for false positive SNV call. Having these data allows you to then extract the features using ```snvoter extraction``` module. Subsequently you can train the model on extracted features using the ```snvoter train``` module.  
 ### Extracting Features:
 ```
 snvoter extraction -i True_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 > Extracted_Features.csv
