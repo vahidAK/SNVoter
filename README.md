@@ -200,12 +200,13 @@ columns are from vcf file and the last seven columns indicate:
 
 2- The second file is the ready vcf file with weighted qualities. You can plot
 the distribution of weighted quality to obtain optimal threshold for filtering.
-The plot usually looks like the following plots:
-![Quality distribution of 10x coverage data](docs/images/QualDist10x.png)
+The plot usually looks like the following plots:  
   
-![Quality distribution of 18x coverage data](docs/images/QualDist18x.png)
+![Quality distribution of 10x coverage data](docs/images/QualDist10x.png)  
   
-![Quality distribution of 22x coverage data](docs/images/QualDist22x.png)
+![Quality distribution of 18x coverage data](docs/images/QualDist18x.png)  
+  
+![Quality distribution of 22x coverage data](docs/images/QualDist22x.png)  
 
 The optimal threshold is the end of the first peak and start of the valley
 (highlighted regions).
