@@ -20,8 +20,7 @@ Table of Contents
 * **[Example](https://github.com/vahidAK/SNVoter#example)**
   
 # Installation
-**NOTE:** SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their
-default python instance. Then activate the environment and install SNVoter using pip or you can clone the git repo and use it from source.  
+**NOTE:** Before installation dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) must be installed. SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their default python instance. Then activate the environment and install SNVoter using pip or you can clone the git repo and use it from source.  
 You can make the conda environment and install all dependencies by downloading the [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/) file and running these lines of codes:  
 
 ```
@@ -29,6 +28,7 @@ conda env create -f environment.yaml
 conda activate snvoter
 ```
 Now you can install SNVoter using pip or use it from source in the dedicated environment with all dependencies installed.  
+  
 ## Using pip
 
 ```
