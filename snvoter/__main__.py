@@ -156,7 +156,7 @@ def openfile(file):
         opened_file = open(file,'rt')
     return opened_file
 
-def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
+def window_mutation(window_list, bam_file,mq,reference,depth):
     """
     Function to calculate mutation frequenies and qualities (features). The
     features then used by prediction or extraction mudules to be used for
@@ -241,68 +241,36 @@ def window_mutation(window_list, bam_file,mq,reference,depth,nine_mer):
                 cov_list.append(coverage)
         if len(cov_list) == 9:# to check is list is empty and ignor partial in case no reads were mapped
             #converting to 5-mer
-            if not nine_mer:
-                for index in range(0,5):
-                    try:
-                        kmer_seqs= list(map("".join, product(*map(IUPAC.get, 
-                                            window_seq[index: index + 5]))))
-                    except:#The sequence does not containe canonical IUPAC letters
-                        continue
-                    for kmer_seq in kmer_seqs:
-                        kmer_dumy= []
-                        for base in kmer_seq:
-                            kmer_dumy.extend(encoder[base])
-                        mean_quals= statistics.mean(qual_list[index: index + 5])
-                        median_quals= statistics.median(qual_list[index: index + 5])
-                        std_quals= statistics.stdev(qual_list[index: index + 5])
-                        mean_mis= statistics.mean(mis_list[index: index + 5])
-                        std_mis= statistics.stdev(mis_list[index: index + 5])
-                        mean_dels= statistics.mean(del_list[index: index + 5])
-                        std_del= statistics.stdev(del_list[index: index + 5])
-                        mean_ins= statistics.mean(ins_list[index: index + 5])
-                        std_ins= statistics.stdev(ins_list[index: index + 5])
-                        out_frequencies= (cov_list[index: index + 5]+
-                                          kmer_dumy+
-                                          qual_list[index: index + 5]+
-                                          mis_list[index: index + 5]+
-                                          del_list[index: index + 5]+
-                                          ins_list[index: index + 5]+
-                                          [mean_quals, median_quals, std_quals,
-                                           mean_mis, std_mis, mean_dels, std_del,
-                                           mean_ins,std_ins])
-                        key= (chrom, windowstart+index,windowstart+index + 5,
-                              base_pos, window_seq[index: index + 5], kmer_seq)
-                        freq_dict[key]= (window , out_frequencies)
-            else:
+            for index in range(0,5):
                 try:
                     kmer_seqs= list(map("".join, product(*map(IUPAC.get, 
-                                        window_seq))))
+                                        window_seq[index: index + 5]))))
                 except:#The sequence does not containe canonical IUPAC letters
                     continue
                 for kmer_seq in kmer_seqs:
                     kmer_dumy= []
                     for base in kmer_seq:
                         kmer_dumy.extend(encoder[base])
-                    mean_quals= statistics.mean(qual_list)
-                    median_quals= statistics.median(qual_list)
-                    std_quals= statistics.stdev(qual_list)
-                    mean_mis= statistics.mean(mis_list)
-                    std_mis= statistics.stdev(mis_list)
-                    mean_dels= statistics.mean(del_list)
-                    std_del= statistics.stdev(del_list)
-                    mean_ins= statistics.mean(ins_list)
-                    std_ins= statistics.stdev(ins_list)
-                    out_frequencies= (cov_list+
+                    mean_quals= statistics.mean(qual_list[index: index + 5])
+                    median_quals= statistics.median(qual_list[index: index + 5])
+                    std_quals= statistics.stdev(qual_list[index: index + 5])
+                    mean_mis= statistics.mean(mis_list[index: index + 5])
+                    std_mis= statistics.stdev(mis_list[index: index + 5])
+                    mean_dels= statistics.mean(del_list[index: index + 5])
+                    std_del= statistics.stdev(del_list[index: index + 5])
+                    mean_ins= statistics.mean(ins_list[index: index + 5])
+                    std_ins= statistics.stdev(ins_list[index: index + 5])
+                    out_frequencies= (cov_list[index: index + 5]+
                                       kmer_dumy+
-                                      qual_list+
-                                      mis_list+
-                                      del_list+
-                                      ins_list+
+                                      qual_list[index: index + 5]+
+                                      mis_list[index: index + 5]+
+                                      del_list[index: index + 5]+
+                                      ins_list[index: index + 5]+
                                       [mean_quals, median_quals, std_quals,
                                        mean_mis, std_mis, mean_dels, std_del,
-                                       mean_ins, std_ins])
-                    key= (chrom, windowstart, windowend,
-                          base_pos, window_seq, kmer_seq)
+                                       mean_ins,std_ins])
+                    key= (chrom, windowstart+index,windowstart+index + 5,
+                          base_pos, window_seq[index: index + 5], kmer_seq)
                     freq_dict[key]= (window , out_frequencies)
         else:
             continue
@@ -357,8 +325,7 @@ def main_extraction(args):
                                      repeat(bam_file),
                                      repeat(mq),
                                      repeat(reference),
-                                     repeat(args.depth),
-                                     repeat(args.nine_mer))))
+                                     repeat(args.depth))))
                     p.close()
                     p.join()
                     for freq_dict in results:
@@ -378,8 +345,7 @@ def main_extraction(args):
                                  repeat(bam_file),
                                  repeat(mq),
                                  repeat(reference),
-                                 repeat(args.depth),
-                                 repeat(args.nine_mer))))
+                                 repeat(args.depth))))
                 p.close()
                 p.join()
                 for freq_dict in results:
@@ -453,21 +419,15 @@ def main_prediction(args):
                                  repeat(bam_file),
                                  repeat(mq),
                                  repeat(reference),
-                                 repeat(args.depth),
-                                 repeat(args.nine_mer))))
+                                 repeat(args.depth))))
                 p.close()
                 p.join()
                 for freq_dict in results:
                     if freq_dict is not None:
                         for key,val in freq_dict.items():
-                            if not args.nine_mer:
-                                coverage= int(statistics.mean(val[1][0:5]))
-                                info_input.append((key,coverage,val[0]))
-                                model_input.append(val[1][5:])
-                            else:
-                                coverage= int(statistics.mean(val[1][0:9]))
-                                info_input.append((key,coverage,val[0]))
-                                model_input.append(val[1][9:])
+                            coverage= int(statistics.mean(val[1][0:5]))
+                            info_input.append((key,coverage,val[0]))
+                            model_input.append(val[1][5:])
                 model_input= np.asarray(model_input, dtype= np.float64)
                 model_input= scaler.transform(model_input)
                 predictions= model.predict(model_input)
@@ -495,21 +455,15 @@ def main_prediction(args):
                                  repeat(bam_file),
                                  repeat(mq),
                                  repeat(reference),
-                                 repeat(args.depth),
-                                 repeat(args.nine_mer))))
+                                 repeat(args.depth))))
                 p.close()
                 p.join()
                 for freq_dict in results:
                     if freq_dict is not None:
                         for key,val in freq_dict.items():
-                            if not args.nine_mer:
-                                coverage= int(statistics.mean(val[1][0:5]))
-                                info_input.append((key,coverage,val[0]))
-                                model_input.append(val[1][5:])
-                            else:
-                                coverage= int(statistics.mean(val[1][0:9]))
-                                info_input.append((key,coverage,val[0]))
-                                model_input.append(val[1][9:])
+                            coverage= int(statistics.mean(val[1][0:5]))
+                            info_input.append((key,coverage,val[0]))
+                            model_input.append(val[1][5:])
                 model_input= np.asarray(model_input, dtype= np.float64)
                 model_input= scaler.transform(model_input)
                 predictions= model.predict(model_input)
@@ -533,14 +487,9 @@ def main_prediction(args):
             ready_dict[tuple(line[0:-7])].append(float(line[-1]))
     for key,val in ready_dict.items():
         if key[5].replace('.','',1).isdigit():
-            if not args.nine_mer:
-                weighted_qual= float(key[5]) * statistics.mean(val)
-                out_write= list(key[0:5])+[round(weighted_qual,4)]+list(key[6:])
-                out_ready.write('\t'.join(map(str,out_write))+'\n')
-            else:
-                weighted_qual= float(key[5]) * val[0]
-                out_write= list(key[0:5])+[round(weighted_qual,4)]+list(key[6:])
-                out_ready.write('\t'.join(map(str,out_write))+'\n')
+            weighted_qual= float(key[5]) * statistics.mean(val)
+            out_write= list(key[0:5])+[round(weighted_qual,4)]+list(key[6:])
+            out_ready.write('\t'.join(map(str,out_write))+'\n')
     out_ready.close()
     sys.stderr.write("Job Finished\n")
 
@@ -551,22 +500,15 @@ def main_train(args):
     train_data= os.path.abspath(args.train)
     test_data= os.path.abspath(args.test)
     output= os.path.abspath(args.out_dir)
-    nine_mer= args.nine_mer
     epoch_num= args.epochs
     batch_num= args.batch_size
 
     train = pd.read_csv(train_data, header= None)
     test= pd.read_csv(test_data, header= None)
-    if not nine_mer:
-        X_train= train.iloc[:, 11:-1].values
-        y_train = train.iloc[:, -1].values
-        test_val= test.iloc[:, 11:-1].values
-        test_label= test.iloc[:, -1].values
-    else:
-        X_train= train.iloc[:, 15:-1].values
-        y_train = train.iloc[:, -1].values
-        test_val= test.iloc[:, 15:-1].values
-        test_label= test.iloc[:, -1].values
+    X_train= train.iloc[:, 11:-1].values
+    y_train = train.iloc[:, -1].values
+    test_val= test.iloc[:, 11:-1].values
+    test_label= test.iloc[:, -1].values
     inputdim= X_train.shape[1]
     # Feature Scaling
     sc = StandardScaler()
@@ -666,13 +608,10 @@ def prediction_parser(subparsers):
                           default= 1, required=False, help="Cutt off for "
                           "filtering out regions with low depth to have "
                           "frequencies. Default >= 1")
-    sp_input.add_argument("--window_bam", "-w", action="store", type=str,
-                          required=False, help="if you want to only do for a "
-                          "region or chromosom You must insert region like "
-                          "this chr1 or chr1:1000-100000.")
-    sp_input.add_argument("--nine_mer", "-nm", action="store_true",
-                          required=False, help="Prediction for 9-mer. "
-                          "Default is five mer")
+#    sp_input.add_argument("--window_bam", "-w", action="store", type=str,
+#                          required=False, help="if you want to only do for a "
+#                          "region or chromosom You must insert region like "
+#                          "this chr1 or chr1:1000-100000.")
     sp_input.add_argument("--threads", "-t", action="store", type=int,
                           required=False, default=4, help="Number of threads. "
                           "Default is 4.")
@@ -711,13 +650,10 @@ def extraction_parser(subparsers):
     se_input.add_argument("--depth", "-d", action="store", type=int,default= 1,
                           required=False,help="Cutt off for filtering out regions "
                           "with low depth to have frequencies. Default >=1")
-    se_input.add_argument("--window_bam", "-w", action="store", type=str,
-                          required=False, help= "if you want to only do for a "
-                          "region or chromosom, you must insert region like "
-                          "this chr1 or chr1:1000-100000.")
-    se_input.add_argument("--nine_mer", "-nm", action="store_true",
-                          required=False, help="Extraction for 9-mer. "
-                          "Default is five mer")
+#    se_input.add_argument("--window_bam", "-w", action="store", type=str,
+#                          required=False, help= "if you want to only do for a "
+#                          "region or chromosom, you must insert region like "
+#                          "this chr1 or chr1:1000-100000.")
     se_input.add_argument("--threads", "-t", action="store", type=int,
                           required=False, default= 4, help="Number of threads")
     se_input.add_argument("--chunk_size", "-cs", action="store", type=int,
@@ -754,9 +690,6 @@ def train_parser(subparsers):
     st_input.add_argument("--plot", "-plt", action= "store_true",
                           required= False, help= "Select this option if you "
                           "wish to output training plots.")
-    st_input.add_argument("--nine_mer", "-nm", action= "store_true",
-                          required= False, help="Training for 9-mer. "
-                          "Default is five mer")
     sub_train.set_defaults(func=main_train)
 
 def main():
