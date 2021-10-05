@@ -579,9 +579,7 @@ def prediction_parser(subparsers):
     sp_input = sub_prediction.add_argument_group("required arguments")
     sp_input.add_argument("--input", "-i", action="store", type=str,
                           required=True,help="The path to the input "
-                          "vcf or bed file. NOTE. Files must end with "
-                          ".bed or .vcf. vcf files are 1-based and beds "
-                          "are zero-based")
+                          "vcf file.")
     sp_input.add_argument("--bam", "-b", action="store", type=str,
                           required=True,help="The path to the alignment bam "
                           "file")
@@ -630,12 +628,11 @@ def extraction_parser(subparsers):
         description=("Extract mutation frequencicies in 5-mer window."))
     se_input = sub_extraction.add_argument_group("required arguments")
     se_input.add_argument("--input", "-i", action="store", type=str,
-                          required=True, help="The path to the input vcf or "
-                          "bed file. NOTE. Files must end with .bed or .vcf. "
-                          "vcf files are 1-based and beds are zero-based")
+                          required=True, help="The path to the input vcf "
+                          "file.")
     se_input.add_argument("--mode_status", "-ms", type=int,action="store",
-                          required=True, help= "0 or 1. The status of the SNV. "
-                        "True positive (1) or Fasle Positive (0).")
+                          required=True, help= "0 or 1. The status of the SNV in the input vcf."
+                          " If the SNVs are tru positive then select 1 if they are false select 0.")
     se_input.add_argument("--bam", "-b", action="store", type=str,
                           required= True, help= "The path to the alignment "
                           "bam file")
