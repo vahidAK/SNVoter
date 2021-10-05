@@ -61,9 +61,7 @@ optional arguments:
 
 required arguments:
   --input INPUT, -i INPUT
-                        The path to the input vcf or bed file. NOTE. Files
-                        must end with .bed or .vcf. vcf files are 1-based and
-                        beds are zero-based
+                        The path to the input vcf file.
   --bam BAM, -b BAM     The path to the alignment bam file
   --reference REFERENCE, -r REFERENCE
                         The path to the reference file. File must be indexed
@@ -108,9 +106,8 @@ required arguments:
   --input INPUT, -i INPUT
                         The path to the input vcf file.
   --status MOD_STATUS, -s STATUS
-                        0 or 1. If you are extracting frequencies to train a
-                        model, give the status for your vcf file
-                        either it is true calls (1) or false calls (0).
+                        0 or 1. The status of the SNV in the input vcf.
+                        If the SNVs are tru positive then select 1 if they are false select 0.
   --bam BAM, -b BAM     The path to the alignment bam file
   --reference REFERENCE, -r REFERENCE
                         The path to the reference file. File must be indexed
