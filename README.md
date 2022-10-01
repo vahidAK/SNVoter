@@ -5,7 +5,7 @@
 Akbari, V., Garant, JM., O’Neill, K. et al. Megabase-scale methylation phasing using nanopore long reads and NanoMethPhase. Genome Biol 22, 68 (2021).
 Access [here](https://doi.org/10.1186/s13059-021-02283-5)
   
-**Note**: SNVoter tested on Clair and older guppy (<v4.3) with high accuracy (hac) 450bp model. If you used Clair3 and/or new guppy basecaller versions and models (e.g. super accuracy model) SNVoter might not offer improvment.
+**Note**: SNVoter tested on Clair and older guppy (<v4.3) with R9.4.1 high accuracy (hac) 450bp model. If you used Clair3 and/or new guppy basecaller versions and models (e.g. super accuracy model) SNVoter might not offer improvment.
 
 Table of Contents
 =================
