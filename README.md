@@ -1,10 +1,12 @@
 ![SNVoter](docs/images/SNVoter.png)
 =======
   
-**Improving SNV detection from low coverage nanopore sequencing data (<30x)**  
+**Improving SNV detection from low coverage nanopore sequencing data (<30x)**.  
 Akbari, V., Garant, JM., O’Neill, K. et al. Megabase-scale methylation phasing using nanopore long reads and NanoMethPhase. Genome Biol 22, 68 (2021).
 Access [here](https://doi.org/10.1186/s13059-021-02283-5)
   
+**Note**: SNVoter tested on Clair and older guppy (<v4.3). If you used Clair3 and/or new guppy basecaller versions SNVoter might not offer improvment.
+
 Table of Contents
 =================
 
