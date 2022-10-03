@@ -10,7 +10,7 @@ Access [here](https://doi.org/10.1186/s13059-021-02283-5)
 Table of Contents
 =================
 
-* **[Installation](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#installation)**
+* **[Installation](https://github.com/vahidAK/SNVoter/README.md#installation)**
 * **[SNVoter Modules](https://github.com/vahidAK/SNVoter#snvoter-modules)**
   * [prediction](https://github.com/vahidAK/SNVoter#prediction)
   * [extraction](https://github.com/vahidAK/SNVoter#extraction)
