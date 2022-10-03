@@ -11,8 +11,6 @@ Table of Contents
 =================
 
 * **[Installation](https://github.com/vahidAK/NanoMethPhase/blob/master/README.md#installation)**
-  * [Using pip](https://github.com/vahidAK/SNVoter#using-pip)
-  * [From source](https://github.com/vahidAK/SNVoter#from-source)
 * **[SNVoter Modules](https://github.com/vahidAK/SNVoter#snvoter-modules)**
   * [prediction](https://github.com/vahidAK/SNVoter#prediction)
   * [extraction](https://github.com/vahidAK/SNVoter#extraction)
