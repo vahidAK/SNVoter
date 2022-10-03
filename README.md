@@ -30,10 +30,11 @@ git clone https://github.com/vahidAK/SNVoter.git
 cd SNVoter
 conda env create -f envs/environment.yaml
 conda activate snvoter
-```
+
 Now you can run snvoter python script in the SNVoter folder of the cloned repository:
 
 /path/to/cloned/SNVoterGithubRepo/snvoter.py -h
+```
 
 Or you can install SNVoter using pip.  
 
