@@ -168,7 +168,12 @@ for i in chr{1..22} chrX chrY; do callVarBam --chkpnt_fn <path to model file> --
 ```
 
 For the full tutorial please refer to [Clair](https://github.com/HKU-BAL/Clair)
-page on GitHub.
+page on GitHub.  
+  
+**NOTE**: SNVoter needs SNV vcf file as input. So **keep only SNVs** from clair vcf file and use it as input (do not filter for variant call quality), for example:
+```
+awk '$4 != "." && $5 != "." && length($4) == 1 && length($5) == 1' Clair.vcf > SNVs_Clair.vcf
+```
 
 ## Improving SNV calling using SNVoter:
 
