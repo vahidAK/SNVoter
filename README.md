@@ -48,7 +48,6 @@ To predict dtetedte SNVs are true calls or false positives.
 usage: snvoter prediction [-h] --input INPUT --bam BAM --reference REFERENCE
                           --output OUTPUT [--model_file MODEL_FILE]
                           [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
-                          [--window_bam WINDOW_BAM]
                           [--threads THREADS] [--chunk_size CHUNK_SIZE]
 
 Predict based on a model.
@@ -77,9 +76,6 @@ optional arguments:
   --depth DEPTH, -d DEPTH
                         Cutt off for filtering out regions with low depth to
                         have frequencies. Default >= 1
-  --window_bam WINDOW_BAM, -w WINDOW_BAM
-                        if you want to only do for a region or chromosom You
-                        must insert region like this chr1 or chr1:1000-100000.
   --threads THREADS, -t THREADS
                         Number of threads. Default is 4.
   --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
@@ -88,10 +84,9 @@ optional arguments:
 ## extraction:
 Extract features to train a new model.
 ```
-usage: snvoter extraction [-h] --input INPUT --status STATUS --bam BAM
-                          --reference REFERENCE
+usage: snvoter extraction [-h] --input INPUT --mode_status MODE_STATUS --bam
+                          BAM --reference REFERENCE
                           [--mappingQuality MAPPINGQUALITY] [--depth DEPTH]
-                          [--window_bam WINDOW_BAM]
                           [--threads THREADS] [--chunk_size CHUNK_SIZE]
 
 Extract mutation frequencicies in 5-mer window.
@@ -102,9 +97,10 @@ optional arguments:
 required arguments:
   --input INPUT, -i INPUT
                         The path to the input vcf file.
-  --status MOD_STATUS, -s STATUS
-                        0 or 1. The status of the SNV in the input vcf.
-                        If the SNVs are tru positive then select 1 if they are false select 0.
+  --mode_status MODE_STATUS, -ms MODE_STATUS
+                        0 or 1. The status of the SNV in the input vcf. If the
+                        SNVs are tru positive then select 1 if they are false
+                        select 0.
   --bam BAM, -b BAM     The path to the alignment bam file
   --reference REFERENCE, -r REFERENCE
                         The path to the reference file. File must be indexed
@@ -117,9 +113,6 @@ optional arguments:
   --depth DEPTH, -d DEPTH
                         Cutt off for filtering out regions with low depth to
                         have frequencies. Default >=1
-  --window_bam WINDOW_BAM, -w WINDOW_BAM
-                        if you want to only do for a region or chromosom, you
-                        must insert region like this chr1 or chr1:1000-100000.
   --threads THREADS, -t THREADS
                         Number of threads
   --chunk_size CHUNK_SIZE, -cs CHUNK_SIZE
