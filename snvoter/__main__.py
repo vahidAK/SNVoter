@@ -199,6 +199,7 @@ def window_mutation(window_list, bam_file,mq,reference,depth):
                           "was not found in the reference file"
                           "".format(chrom,windowstart,windowend))
             continue
+        fasta.close()
         window_seq=str(window_seq.upper())
         pileupcolumns= bam.pileup(chrom, windowstart, windowend,
                                   truncate= True,min_base_quality = 0,
@@ -274,6 +275,7 @@ def window_mutation(window_list, bam_file,mq,reference,depth):
                     freq_dict[key]= (window , out_frequencies)
         else:
             continue
+    bam.close()
     return freq_dict
 
 def main_extraction(args):
