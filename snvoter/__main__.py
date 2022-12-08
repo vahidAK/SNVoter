@@ -608,10 +608,6 @@ def prediction_parser(subparsers):
                           default= 1, required=False, help="Cutt off for "
                           "filtering out regions with low depth to have "
                           "frequencies. Default >= 1")
-#    sp_input.add_argument("--window_bam", "-w", action="store", type=str,
-#                          required=False, help="if you want to only do for a "
-#                          "region or chromosom You must insert region like "
-#                          "this chr1 or chr1:1000-100000.")
     sp_input.add_argument("--threads", "-t", action="store", type=int,
                           required=False, default=4, help="Number of threads. "
                           "Default is 4.")
@@ -649,10 +645,6 @@ def extraction_parser(subparsers):
     se_input.add_argument("--depth", "-d", action="store", type=int,default= 1,
                           required=False,help="Cutt off for filtering out regions "
                           "with low depth to have frequencies. Default >=1")
-#    se_input.add_argument("--window_bam", "-w", action="store", type=str,
-#                          required=False, help= "if you want to only do for a "
-#                          "region or chromosom, you must insert region like "
-#                          "this chr1 or chr1:1000-100000.")
     se_input.add_argument("--threads", "-t", action="store", type=int,
                           required=False, default= 4, help="Number of threads")
     se_input.add_argument("--chunk_size", "-cs", action="store", type=int,
