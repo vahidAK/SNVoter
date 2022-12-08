@@ -43,7 +43,7 @@ pip install snvoter
 ```  
 # SNVoter Modules
 ## prediction:
-To predict dtetedte SNVs are true calls or false positives.
+To predict if detected SNVs are true calls or false positives.
 ```
 usage: snvoter prediction [-h] --input INPUT --bam BAM --reference REFERENCE
                           --output OUTPUT [--model_file MODEL_FILE]
