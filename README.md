@@ -202,8 +202,8 @@ By default SNVoter will use the model file trained by us using NA12878 20 flow c
 In order to train a new model you need to have two vcf files. One for true SNVs and the other for false positive SNV calls. Having these data allows you to then extract the features using ```snvoter extraction``` module. Subsequently, you can train a new model on extracted features using the ```snvoter train``` module.  
 ### Extracting Features:
 ```
-snvoter extraction -i True_SNVs.vcf -b alignment.bam -r reference.fa -s 1 -t 24 > Extracted_Features.csv
-snvoter extraction -i False_SNVs.vcf -b alignment.bam -r reference.fa -s 0 -t 24 >> Extracted_Features.csv
+snvoter extraction -i True_SNVs.vcf -b alignment.bam -r reference.fa -ms 1 -t 24 > Extracted_Features.csv
+snvoter extraction -i False_SNVs.vcf -b alignment.bam -r reference.fa -ms 0 -t 24 >> Extracted_Features.csv
 ```
 After extracting the features you need to shuffle the file.  
 ```
