@@ -22,7 +22,7 @@ Table of Contents
 * **[Example](https://github.com/vahidAK/SNVoter#example)**
   
 # Installation
-**NOTE:** Before installation dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) must be installed. SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their default python instance. Then activate the environment and use SNVoter from source or install it using pip.  
+**NOTE:** Before installation dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) must be installed. SNVoter uses several fixed versions of its dependencies in [environment.yaml](https://github.com/vahidAK/SNVoter/blob/master/envs/environment.yaml) file . Users are encouraged to use a conda or similar environment to isolate the packages from their default python instance. Then activate the environment and use SNVoter.  
 You can make the conda environment and install all dependencies by running these lines of codes:  
 
 ```
@@ -33,14 +33,9 @@ conda activate snvoter
 
 Now you can run snvoter python script in the SNVoter folder of the cloned repository:
 
-/path/to/cloned/SNVoterGithubRepo/snvoter.py -h
+python /path/to/cloned/SNVoterGithubRepo/snvoter.py -h
 ```
-
-Or you can install SNVoter using pip.  
-
-```
-pip install snvoter
-```  
+  
 # SNVoter Modules
 ## prediction:
 To predict if detected SNVs are true calls or false positives.
