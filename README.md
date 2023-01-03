@@ -177,12 +177,13 @@ columns are from vcf file and the last seven columns indicate:
    - **pos_start**:        0-based position of the 5-mer start
    - **pos_end**:          0-based position of the 5-mer end
    - **pos**:              0-based position of the SNV
-   - **5-mer sequence**:   sequence of five-mer
+   - **window sequence from ref**:   sequence of window from reference
+   - **5-mer sequence for window**:   5-mer sequence for the reference window sequence
    - **Coverage**:         this might be different from Clair's coverage as
                            SNVoter uses different mapping quality threshold
    - **Prediction**
 
-2- The second file is the ready vcf file with weighted qualities. You can plot
+2- The second file is the ready vcf file with weighted qualities in the 6th column. You can plot
 the distribution of weighted quality to obtain optimal threshold for filtering.
 The plot usually looks like the following plots:  
   
