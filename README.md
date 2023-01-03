@@ -172,7 +172,7 @@ snvoter prediction -i <SNVs_Clair.vcf> -b <sorted_indexed.bam> -r <reference_gen
 It will produce two files.
 
 1- Prediction file that includes each prediction for each 5-mer. The first 10
-columns are from vcf file and the last seven columns indicate:
+columns are from vcf file and the last eight columns indicate:
    - **chrom**:            the chromosome name
    - **pos_start**:        0-based position of the 5-mer start
    - **pos_end**:          0-based position of the 5-mer end
